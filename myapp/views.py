@@ -3,8 +3,14 @@ from .models import *
 
 
 def gallery(request):
+    category = request.GET.get('category')
+    if category == None:
+        photos = Photo.objects.all()
+    else:
+        photos = Photo.objects.filter(category__name=category)
+
     categories = Category.objects.all()
-    photos = Photo.objects.all()
+
     context = {"categories":categories, "photos":photos}
     return render(request,"myapp/gallery.html",context)
 
@@ -26,6 +32,7 @@ def addphoto(request):
             category, created = Category.objects.get_or_create(name=data['catogery_new'])
         else:
             category = None
+
         Photo.objects.create(
             category = category,
             description = description,
